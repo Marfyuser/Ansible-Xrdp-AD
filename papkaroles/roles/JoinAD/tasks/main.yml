@@ -1,0 +1,4 @@
+---
+- name: ADD USER AD
+  shell: join-to-domain.sh -d {{nameDomain}} -n {{namepc}} -u {{nameADMINdomain}} -p {{passwordADMINDOMAIN}} -y 
+ # shell: join-to-domain.sh -d {{ nameDomain }} -n {{ namepc }} -u {{ nameADMINdomain }} -p {{ passwordADMINDOMAIN | password_hash('sha512') }} -y

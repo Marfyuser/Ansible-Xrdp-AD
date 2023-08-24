@@ -1,0 +1,50 @@
+---
+     - name: delete #Xorg
+       ansible.builtin.lineinfile:
+         backup: yes
+         dest: /etc/xrdp/xrdp.ini
+         state: absent
+         insertafter: "; in sesman.ini. See and configure also sesman.ini."
+         regexp: "{{item.reg}}"
+         line: ""
+       with_items:
+       - { reg: '^#[Xorg]', line: '[Xorg]'}
+       - { reg: '^#name=Xorg', line: 'name=Xorg'}
+       - { reg: '^#lib=libxup.so', line: 'lib=libxup.so'}
+       - { reg: '^#username=ask', line: 'username=ask'}
+       - { reg: '^#password=ask', line: 'password=ask'}
+       - { reg: '^#ip=127.0.0.1', line: 'ip=127.0.0.1'}
+       - { reg: '^#port=-1', line: 'port=-1'}
+       - { reg: '^#code=20', line: 'code=20'}
+
+     - name: delete Xvnc
+       ansible.builtin.lineinfile:
+         dest: /etc/xrdp/xrdp.ini
+         state: absent
+         insertbefore: "; Disable requested encodings to support buggy VNC servers"
+         regexp: "{{item.reg}}"
+       with_items:
+       - { reg: '^\[Xvnc]'}
+       - { reg: '^name=Xvnc'}
+       - { reg: '^lib=libvnc.so'}
+       - { reg: '^username=ask'}
+       - { reg: '^password=ask'}
+       - { reg: '^ip=127.0.0.1'}
+       - { reg: '^port=-1'}
+       - { reg: '^xserverbpp=24'}
+       - { reg: '^delay_ms=2000'}
+
+
+     - name: меняем тип сессии на Xorg
+       ansible.builtin.blockinfile:
+         dest: /etc/xrdp/xrdp.ini
+         insertafter: "; in sesman.ini. See and configure also sesman.ini."
+         block: |
+           [Xorg]
+           name=Xorg
+           lib=libxup.so
+           username=ask
+           password=ask
+           ip=127.0.0.1
+           port=-1
+           code=20

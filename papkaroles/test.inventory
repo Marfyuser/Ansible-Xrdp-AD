@@ -1,0 +1,6 @@
+[test]
+newstudent ansible_ssh_host=192.168.42.98
+
+[all:vars]
+ansible_ssh_user=root
+ansible_password=11223344

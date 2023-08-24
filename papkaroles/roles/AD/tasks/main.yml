@@ -1,0 +1,6 @@
+---
+  - name: ADD USER AD
+    yum:
+      name: "realmd, sssd, oddjob, join-to-domain, samba-common-tools"
+      state: present
+     

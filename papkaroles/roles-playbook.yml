@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: true
+
+  roles:
+     - xrdp
+     - xrdpConf
+     - AD
+     - ADconf
+     - JoinAD
+    

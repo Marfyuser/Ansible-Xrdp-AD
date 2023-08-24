@@ -1,0 +1,57 @@
+---
+- name: shell
+  shell: |
+         dnf update
+         dnf groupinstall mate-desktop -y
+    # dnf groupinstall x11 -y
+    # dnf install vulkan-loader -y
+    # dnf install vulkan-loader -y
+
+- name: install mate
+  ansible.builtin.yum:
+    # name: "xrdp, xorgxrdp, mate-session-manager, pulseaudio-module-xrdp, xrdp-devel.i686, xrdp-devel.x86_64 "
+    name:
+      # - vulkan-loader
+      - xrdp
+      - xorgxrdp
+      - pulseaudio-module-xrdp
+      # - mate-session-manager
+    state: present
+    # dnf: clear all
+
+- name: add group
+  ansible.builtin.group:
+    name: tsusers
+    state: present
+
+- name: add user
+  ansible.builtin.user:
+    name: test
+    groups: tsusers
+    password: "{{ password | password_hash('sha512') }}"
+    update_password: always
+
+- name: start xrdp
+  systemd:
+    name: xrdp
+    state: started
+
+- name: создание файла desktop
+  copy:
+    content: 'PREFERRED="$(type -p mate-session)"'
+    dest: /etc/sysconfig/desktop
+
+- name: правим конфиг sesman
+  shell: sed -i 's/param=Xorg/param=\/usr\/libexec\/Xorg/' /etc/xrdp/sesman.ini
+
+- name: добавляем xrdp в автозагрузку
+  systemd:
+    name: xrdp
+    state: started
+    enabled: yes
+
+- name: перезагружаем xrdp
+  systemd:
+    name: xrdp
+    state: restarted
+
